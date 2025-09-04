@@ -1,14 +1,34 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Layout } from '@/components/ui/layout';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { getUser } from '@/lib/supabase';
-import { Plus, Search, Image as ImageIcon, Calendar, MapPin, User } from 'lucide-react';
-import { format } from 'date-fns';
+import { useState, useEffect } from "react";
+import { Layout } from "@/components/ui/layout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { getUser } from "@/lib/supabase";
+import {
+  Plus,
+  Search,
+  Image as ImageIcon,
+  Calendar,
+  MapPin,
+  User,
+} from "lucide-react";
+import { format } from "date-fns";
 
 interface Photo {
   id: string;
@@ -23,78 +43,79 @@ interface Photo {
 export default function PhotosPage() {
   const [photos, setPhotos] = useState<Photo[]>([
     {
-      id: '1',
-      title: 'Milling asphalt pavement adjacent to Trk B',
-      caption: 'Milling asphalt pavement adjacent to Trk B',
-      url: 'https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400',
-      uploadedBy: 'John Smith',
+      id: "1",
+      title: "Milling asphalt pavement adjacent to Trk B",
+      caption: "Milling asphalt pavement adjacent to Trk B",
+      url: "https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400",
+      uploadedBy: "John Smith",
       uploadedAt: new Date().toISOString(),
-      location: 'Track Section B'
+      location: "Track Section B",
     },
     {
-      id: '2',
-      title: 'Survey',
-      caption: 'Survey',
-      url: 'https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400',
-      uploadedBy: 'Mike Johnson',
+      id: "2",
+      title: "Survey",
+      caption: "Survey",
+      url: "https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400",
+      uploadedBy: "Mike Johnson",
       uploadedAt: new Date(Date.now() - 86400000).toISOString(),
-      location: 'Mile Marker 15.2'
+      location: "Mile Marker 15.2",
     },
     {
-      id: '3',
-      title: 'TS Panels, T-clips',
-      caption: 'TS Panels, T-clips',
-      url: 'https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400',
-      uploadedBy: 'Sarah Davis',
+      id: "3",
+      title: "TS Panels, T-clips",
+      caption: "TS Panels, T-clips",
+      url: "https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400",
+      uploadedBy: "Sarah Davis",
       uploadedAt: new Date(Date.now() - 172800000).toISOString(),
-      location: 'Storage Yard'
+      location: "Storage Yard",
     },
     {
-      id: '4',
-      title: 'Delivery Receipt',
-      caption: 'Delivery Receipt',
-      url: 'https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400',
-      uploadedBy: 'Tom Wilson',
+      id: "4",
+      title: "Delivery Receipt",
+      caption: "Delivery Receipt",
+      url: "https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400",
+      uploadedBy: "Tom Wilson",
       uploadedAt: new Date(Date.now() - 259200000).toISOString(),
-      location: 'Main Gate'
+      location: "Main Gate",
     },
     {
-      id: '5',
-      title: 'Steel Rails Installation',
-      caption: 'Steel Rails Installation',
-      url: 'https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400',
-      uploadedBy: 'Alex Brown',
+      id: "5",
+      title: "Steel Rails Installation",
+      caption: "Steel Rails Installation",
+      url: "https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400",
+      uploadedBy: "Alex Brown",
       uploadedAt: new Date(Date.now() - 345600000).toISOString(),
-      location: 'Section 4A'
+      location: "Section 4A",
     },
     {
-      id: '6',
-      title: 'Track Inspection',
-      caption: 'Track Inspection',
-      url: 'https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400',
-      uploadedBy: 'Lisa Chen',
+      id: "6",
+      title: "Track Inspection",
+      caption: "Track Inspection",
+      url: "https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=400",
+      uploadedBy: "Lisa Chen",
       uploadedAt: new Date(Date.now() - 432000000).toISOString(),
-      location: 'Bridge 12'
-    }
+      location: "Bridge 12",
+    },
   ]);
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [filteredPhotos, setFilteredPhotos] = useState<Photo[]>(photos);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
 
   useEffect(() => {
-    const filtered = photos.filter(photo =>
-      photo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      photo.caption.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      photo.uploadedBy.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = photos.filter(
+      (photo) =>
+        photo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        photo.caption.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        photo.uploadedBy.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredPhotos(filtered);
   }, [searchQuery, photos]);
 
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="space-y-4 lg:space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -137,12 +158,13 @@ export default function PhotosPage() {
                   <Input placeholder="Track Section, Mile Marker, etc." />
                 </div>
                 <div className="flex justify-end space-x-2">
-                  <Button variant="outline" onClick={() => setIsUploadOpen(false)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsUploadOpen(false)}
+                  >
                     Cancel
                   </Button>
-                  <Button className="railcore-add-btn">
-                    Upload Photos
-                  </Button>
+                  <Button className="railcore-add-btn">Upload Photos</Button>
                 </div>
               </div>
             </DialogContent>
@@ -183,16 +205,23 @@ export default function PhotosPage() {
         {filteredPhotos.length === 0 && (
           <div className="text-center py-12">
             <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No photos found</h3>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              No photos found
+            </h3>
             <p className="mt-1 text-sm text-gray-500">
-              {searchQuery ? 'Try adjusting your search terms.' : 'Upload your first photo to get started.'}
+              {searchQuery
+                ? "Try adjusting your search terms."
+                : "Upload your first photo to get started."}
             </p>
           </div>
         )}
 
         {/* Photo Detail Modal */}
         {selectedPhoto && (
-          <Dialog open={!!selectedPhoto} onOpenChange={() => setSelectedPhoto(null)}>
+          <Dialog
+            open={!!selectedPhoto}
+            onOpenChange={() => setSelectedPhoto(null)}
+          >
             <DialogContent className="max-w-4xl">
               <DialogHeader>
                 <DialogTitle>{selectedPhoto.title}</DialogTitle>
@@ -210,7 +239,7 @@ export default function PhotosPage() {
                   </div>
                   <div className="flex items-center text-gray-600">
                     <Calendar className="mr-2 h-4 w-4" />
-                    {format(new Date(selectedPhoto.uploadedAt), 'PPP')}
+                    {format(new Date(selectedPhoto.uploadedAt), "PPP")}
                   </div>
                   {selectedPhoto.location && (
                     <div className="flex items-center text-gray-600">

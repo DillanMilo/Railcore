@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { signOut, getUser } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
-import { 
-  Building2, 
-  FolderOpen, 
-  CheckSquare, 
-  Calendar, 
-  FileText, 
-  Users, 
-  Camera, 
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { signOut, getUser } from "@/lib/supabase";
+import { Button } from "@/components/ui/button";
+import {
+  Building2,
+  FolderOpen,
+  CheckSquare,
+  Calendar,
+  FileText,
+  Users,
+  Camera,
   AlertTriangle,
   DollarSign,
   ClipboardList,
@@ -29,8 +29,8 @@ import {
   Archive,
   Layers,
   Info,
-  Grid3X3
-} from 'lucide-react';
+  Grid3X3,
+} from "lucide-react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -48,7 +48,7 @@ export function Layout({ children }: LayoutProps) {
         const currentUser = await getUser();
         setUser(currentUser);
       } catch (error) {
-        console.error('Error getting user:', error);
+        console.error("Error getting user:", error);
       }
     };
 
@@ -58,131 +58,133 @@ export function Layout({ children }: LayoutProps) {
   const handleSignOut = async () => {
     try {
       await signOut();
-      router.push('/login');
+      router.push("/login");
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
     }
   };
 
   const navigationItems = [
-    { 
-      name: 'Projects', 
-      href: '/dashboard', 
+    {
+      name: "Projects",
+      href: "/dashboard",
       icon: Building2,
-      isActive: pathname === '/dashboard'
+      isActive: pathname === "/dashboard",
     },
-    { 
-      name: 'Tasks', 
-      href: '/dashboard/tasks', 
+    {
+      name: "Tasks",
+      href: "/dashboard/tasks",
       icon: CheckSquare,
-      isActive: pathname.startsWith('/dashboard/tasks')
+      isActive: pathname.startsWith("/dashboard/tasks"),
     },
-    { 
-      name: 'Calendar', 
-      href: '/dashboard/calendar', 
+    {
+      name: "Calendar",
+      href: "/dashboard/calendar",
       icon: Calendar,
-      isActive: pathname.startsWith('/dashboard/calendar')
+      isActive: pathname.startsWith("/dashboard/calendar"),
     },
-    { 
-      name: 'Daily Reports', 
-      href: '/dashboard/daily-reports', 
+    {
+      name: "Daily Reports",
+      href: "/dashboard/daily-reports",
       icon: FileText,
-      isActive: pathname.startsWith('/dashboard/daily-reports')
+      isActive: pathname.startsWith("/dashboard/daily-reports"),
     },
-    { 
-      name: 'Change Orders', 
-      href: '/dashboard/change-orders', 
+    {
+      name: "Change Orders",
+      href: "/dashboard/change-orders",
       icon: ClipboardList,
-      isActive: pathname.startsWith('/dashboard/change-orders')
+      isActive: pathname.startsWith("/dashboard/change-orders"),
     },
-    { 
-      name: 'Documents', 
-      href: '/dashboard/documents', 
+    {
+      name: "Documents",
+      href: "/dashboard/documents",
       icon: FolderOpen,
-      isActive: pathname.startsWith('/dashboard/documents')
+      isActive: pathname.startsWith("/dashboard/documents"),
     },
-    { 
-      name: 'Inspections', 
-      href: '/dashboard/inspections', 
+    {
+      name: "Inspections",
+      href: "/dashboard/inspections",
       icon: UserCheck,
-      isActive: pathname.startsWith('/dashboard/inspections')
+      isActive: pathname.startsWith("/dashboard/inspections"),
     },
-    { 
-      name: 'Material Usage', 
-      href: '/dashboard/material-usage', 
+    {
+      name: "Material Usage",
+      href: "/dashboard/material-usage",
       icon: Archive,
-      isActive: pathname.startsWith('/dashboard/material-usage')
+      isActive: pathname.startsWith("/dashboard/material-usage"),
     },
-    { 
-      name: 'Meeting Minutes', 
-      href: '/dashboard/meeting-minutes', 
+    {
+      name: "Meeting Minutes",
+      href: "/dashboard/meeting-minutes",
       icon: Clock,
-      isActive: pathname.startsWith('/dashboard/meeting-minutes')
+      isActive: pathname.startsWith("/dashboard/meeting-minutes"),
     },
-    { 
-      name: 'Pay Applications', 
-      href: '/dashboard/pay-applications', 
+    {
+      name: "Pay Applications",
+      href: "/dashboard/pay-applications",
       icon: DollarSign,
-      isActive: pathname.startsWith('/dashboard/pay-applications')
+      isActive: pathname.startsWith("/dashboard/pay-applications"),
     },
-    { 
-      name: 'Photos', 
-      href: '/dashboard/photos', 
+    {
+      name: "Photos",
+      href: "/dashboard/photos",
       icon: Camera,
-      isActive: pathname.startsWith('/dashboard/photos')
+      isActive: pathname.startsWith("/dashboard/photos"),
     },
-    { 
-      name: 'Safety Incidents', 
-      href: '/dashboard/safety-incidents', 
+    {
+      name: "Safety Incidents",
+      href: "/dashboard/safety-incidents",
       icon: AlertTriangle,
-      isActive: pathname.startsWith('/dashboard/safety-incidents')
+      isActive: pathname.startsWith("/dashboard/safety-incidents"),
     },
-    { 
-      name: 'Users', 
-      href: '/dashboard/users', 
+    {
+      name: "Users",
+      href: "/dashboard/users",
       icon: Users,
-      isActive: pathname.startsWith('/dashboard/users')
+      isActive: pathname.startsWith("/dashboard/users"),
     },
-    { 
-      name: 'Work Breakdown Structure', 
-      href: '/dashboard/work-breakdown', 
+    {
+      name: "Work Breakdown Structure",
+      href: "/dashboard/work-breakdown",
       icon: Layers,
-      isActive: pathname.startsWith('/dashboard/work-breakdown')
+      isActive: pathname.startsWith("/dashboard/work-breakdown"),
     },
-    { 
-      name: 'Search', 
-      href: '/dashboard/search', 
+    {
+      name: "Search",
+      href: "/dashboard/search",
       icon: Search,
-      isActive: pathname.startsWith('/dashboard/search')
+      isActive: pathname.startsWith("/dashboard/search"),
     },
-    { 
-      name: 'About', 
-      href: '/dashboard/about', 
+    {
+      name: "About",
+      href: "/dashboard/about",
       icon: Info,
-      isActive: pathname.startsWith('/dashboard/about')
+      isActive: pathname.startsWith("/dashboard/about"),
     },
-    { 
-      name: 'App Gallery', 
-      href: '/dashboard/app-gallery', 
+    {
+      name: "App Gallery",
+      href: "/dashboard/app-gallery",
       icon: Grid3X3,
-      isActive: pathname.startsWith('/dashboard/app-gallery')
-    }
+      isActive: pathname.startsWith("/dashboard/app-gallery"),
+    },
   ];
 
   return (
     <div className="min-h-screen railcore-bg">
       {/* Mobile sidebar backdrop */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 railcore-sidebar transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:static lg:inset-0`}>
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-64 railcore-sidebar transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:static lg:inset-0`}
+      >
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
@@ -190,7 +192,9 @@ export function Layout({ children }: LayoutProps) {
               <div className="p-2 railcore-add-btn rounded-lg">
                 <Building2 className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">RailCore CM</span>
+              <span className="text-xl font-bold text-gray-900">
+                RailCore CM
+              </span>
             </div>
             <button
               onClick={() => setIsSidebarOpen(false)}
@@ -211,7 +215,9 @@ export function Layout({ children }: LayoutProps) {
                     router.push(item.href);
                     setIsSidebarOpen(false);
                   }}
-                  className={`railcore-nav-item w-full text-left ${item.isActive ? 'active' : ''}`}
+                  className={`railcore-nav-item w-full text-left ${
+                    item.isActive ? "active" : ""
+                  }`}
                 >
                   <Icon className="mr-3 h-5 w-5 flex-shrink-0" />
                   <span className="truncate">{item.name}</span>
@@ -225,12 +231,12 @@ export function Layout({ children }: LayoutProps) {
             <div className="flex items-center space-x-3 mb-3">
               <div className="h-8 w-8 bg-orange-500 rounded-full flex items-center justify-center">
                 <span className="text-sm font-medium text-white">
-                  {user?.email?.charAt(0).toUpperCase() || 'U'}
+                  {user?.email?.charAt(0).toUpperCase() || "U"}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
-                  {user?.email || 'User'}
+                  {user?.email || "User"}
                 </p>
               </div>
             </div>
@@ -264,8 +270,8 @@ export function Layout({ children }: LayoutProps) {
 
         {/* Page content */}
         <main className="flex-1">
-          <div className="p-6">
-            {children}
+          <div className="p-4 sm:p-6 lg:p-6 xl:p-6 2xl:p-8">
+            <div className="max-w-7xl mx-auto">{children}</div>
           </div>
         </main>
       </div>
