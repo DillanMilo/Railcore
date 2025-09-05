@@ -13,6 +13,8 @@ const mockProjects: Project[] = [
     name: 'Main Line Extension Phase 2',
     description: 'Extension of main rail line from Station A to Station B',
     distribution_list: ['manager@railroad.com', 'inspector@dot.gov'],
+    location: { lat: 40.7128, lng: -74.0060 },
+    status: 'active',
     created_by: 'demo-user',
     created_at: new Date().toISOString()
   }

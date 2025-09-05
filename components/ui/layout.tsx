@@ -30,6 +30,8 @@ import {
   Layers,
   Info,
   Grid3X3,
+  Bot,
+  ArrowRight,
 } from "lucide-react";
 
 interface LayoutProps {
@@ -39,6 +41,9 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const [user, setUser] = useState<any>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [assistantQuery, setAssistantQuery] = useState("");
+  const [showAssistantSuggestions, setShowAssistantSuggestions] =
+    useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -62,6 +67,93 @@ export function Layout({ children }: LayoutProps) {
     } catch (error) {
       console.error("Error signing out:", error);
     }
+  };
+
+  const assistantSuggestions = [
+    {
+      text: "Show me daily reports",
+      action: () => router.push("/dashboard/daily-reports"),
+      icon: FileText,
+    },
+    {
+      text: "View all projects",
+      action: () => router.push("/dashboard"),
+      icon: Building2,
+    },
+    {
+      text: "Check inspections",
+      action: () => router.push("/dashboard/inspections"),
+      icon: UserCheck,
+    },
+    {
+      text: "Open calendar",
+      action: () => router.push("/dashboard/calendar"),
+      icon: Calendar,
+    },
+    {
+      text: "Manage tasks",
+      action: () => router.push("/dashboard/tasks"),
+      icon: CheckSquare,
+    },
+    {
+      text: "View documents",
+      action: () => router.push("/dashboard/documents"),
+      icon: FolderOpen,
+    },
+    {
+      text: "Safety incidents",
+      action: () => router.push("/dashboard/safety-incidents"),
+      icon: AlertTriangle,
+    },
+    {
+      text: "Change orders",
+      action: () => router.push("/dashboard/change-orders"),
+      icon: ClipboardList,
+    },
+  ];
+
+  const handleAssistantSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!assistantQuery.trim()) return;
+
+    const query = assistantQuery.toLowerCase();
+
+    // Smart navigation based on query
+    if (query.includes("report") || query.includes("daily")) {
+      router.push("/dashboard/daily-reports");
+    } else if (query.includes("project")) {
+      router.push("/dashboard");
+    } else if (query.includes("task")) {
+      router.push("/dashboard/tasks");
+    } else if (query.includes("calendar") || query.includes("schedule")) {
+      router.push("/dashboard/calendar");
+    } else if (query.includes("inspection")) {
+      router.push("/dashboard/inspections");
+    } else if (query.includes("document") || query.includes("file")) {
+      router.push("/dashboard/documents");
+    } else if (query.includes("safety") || query.includes("incident")) {
+      router.push("/dashboard/safety-incidents");
+    } else if (query.includes("change") || query.includes("order")) {
+      router.push("/dashboard/change-orders");
+    } else if (query.includes("photo") || query.includes("image")) {
+      router.push("/dashboard/photos");
+    } else if (query.includes("user") || query.includes("team")) {
+      router.push("/dashboard/users");
+    } else {
+      // Default to search page
+      router.push(`/dashboard/search?q=${encodeURIComponent(assistantQuery)}`);
+    }
+
+    setAssistantQuery("");
+    setShowAssistantSuggestions(false);
+  };
+
+  const getFilteredSuggestions = () => {
+    if (!assistantQuery.trim()) return assistantSuggestions.slice(0, 4);
+
+    return assistantSuggestions.filter((suggestion) =>
+      suggestion.text.toLowerCase().includes(assistantQuery.toLowerCase())
+    );
   };
 
   const navigationItems = [
@@ -192,16 +284,85 @@ export function Layout({ children }: LayoutProps) {
             </div>
           </div>
 
-          {/* Center: Search */}
-          <div className="flex-1 max-w-2xl mx-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search Projects"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
-            </div>
+          {/* Center: Assistant */}
+          <div className="flex-1 max-w-2xl mx-4 relative">
+            <form onSubmit={handleAssistantSearch}>
+              <div className="relative">
+                <Bot className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Ask Assistant: 'Show daily reports', 'Open calendar', 'Find safety incidents'..."
+                  value={assistantQuery}
+                  onChange={(e) => setAssistantQuery(e.target.value)}
+                  onFocus={() => setShowAssistantSuggestions(true)}
+                  onBlur={() =>
+                    setTimeout(() => setShowAssistantSuggestions(false), 200)
+                  }
+                  className="w-full pl-10 pr-12 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-orange-500 transition-colors"
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </form>
+
+            {/* Assistant Suggestions Dropdown */}
+            {showAssistantSuggestions && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
+                <div className="p-3 border-b border-gray-100">
+                  <h4 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
+                    <Bot className="mr-2 h-4 w-4 text-orange-500" />
+                    Assistant Suggestions
+                  </h4>
+                </div>
+                <div className="py-2">
+                  {getFilteredSuggestions().map((suggestion, index) => {
+                    const Icon = suggestion.icon;
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          suggestion.action();
+                          setAssistantQuery("");
+                          setShowAssistantSuggestions(false);
+                        }}
+                        className="w-full flex items-center px-4 py-2 text-left hover:bg-gray-50 transition-colors"
+                      >
+                        <Icon className="mr-3 h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-gray-700">
+                          {suggestion.text}
+                        </span>
+                      </button>
+                    );
+                  })}
+
+                  {assistantQuery.trim() && (
+                    <div className="border-t border-gray-100 mt-2 pt-2">
+                      <button
+                        onClick={() => {
+                          router.push(
+                            `/dashboard/search?q=${encodeURIComponent(
+                              assistantQuery
+                            )}`
+                          );
+                          setAssistantQuery("");
+                          setShowAssistantSuggestions(false);
+                        }}
+                        className="w-full flex items-center px-4 py-2 text-left hover:bg-gray-50 transition-colors"
+                      >
+                        <Search className="mr-3 h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-gray-700">
+                          Search for "{assistantQuery}"
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right: User Menu */}

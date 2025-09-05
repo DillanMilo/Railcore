@@ -31,7 +31,9 @@ import {
   Upload,
   FileText,
   Calendar,
+  MapPin,
 } from "lucide-react";
+import { GoogleMap } from "@/components/ui/google-map";
 import type { Org, Project } from "@/types/models";
 
 export default function DashboardPage() {
@@ -350,6 +352,27 @@ export default function DashboardPage() {
                     </p>
                   </div>
                 </div>
+
+                {/* Project Location Map */}
+                {selectedProject.location && (
+                  <div className="mt-6">
+                    <h4 className="text-sm font-medium text-gray-900 mb-3 flex items-center">
+                      <MapPin className="mr-2 h-4 w-4 text-orange-500" />
+                      Project Location
+                    </h4>
+                    <GoogleMap
+                      center={selectedProject.location}
+                      markers={[
+                        {
+                          position: selectedProject.location,
+                          title: selectedProject.name,
+                          info: selectedProject.description,
+                        },
+                      ]}
+                      height="200px"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Related Sections */}

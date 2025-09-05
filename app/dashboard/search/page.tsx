@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Layout } from "@/components/ui/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,12 +35,14 @@ import {
   AlertTriangle,
   TrendingUp,
   CheckCircle,
+  Bot,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { ProjectNote, ProjectMedia, Project } from "@/types/models";
 
 export default function SearchPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
   const [searchResults, setSearchResults] = useState<{
     notes: ProjectNote[];
     media: ProjectMedia[];
@@ -48,7 +51,7 @@ export default function SearchPage() {
   const [allMedia, setAllMedia] = useState<ProjectMedia[]>([]);
   const [projects, setProjects] = useState<Record<string, Project>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [hasSearched, setHasSearched] = useState(!!searchParams.get("q"));
 
   useEffect(() => {
     const initialize = async () => {
@@ -82,6 +85,15 @@ export default function SearchPage() {
 
     initialize();
   }, []);
+
+  // Auto-search if query parameter is provided
+  useEffect(() => {
+    const query = searchParams.get("q");
+    if (query && !hasSearched) {
+      setSearchQuery(query);
+      handleSearch();
+    }
+  }, [searchParams, hasSearched]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -158,9 +170,14 @@ export default function SearchPage() {
       <div className="space-y-4 lg:space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Search Projects</h1>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+            <Bot className="mr-3 h-8 w-8 text-orange-500" />
+            Assistant Search Results
+          </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Search through all project notes, media, and documentation
+            {searchQuery
+              ? `Results for "${searchQuery}"`
+              : "Search through all project notes, media, and documentation"}
           </p>
         </div>
 

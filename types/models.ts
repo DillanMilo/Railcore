@@ -10,7 +10,8 @@ export type Project = {
   name: string;
   description: string;
   distribution_list: string[];
-  status: 'active' | 'completed' | 'archived';
+  location?: { lat: number; lng: number };
+  status?: 'active' | 'completed' | 'archived';
   created_by: string;
   created_at: string;
 };

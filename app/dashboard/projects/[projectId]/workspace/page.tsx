@@ -58,6 +58,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { CameraCapture } from "@/components/ui/camera-capture";
+import { GoogleMap } from "@/components/ui/google-map";
 import type { Project, ProjectNote, ProjectMedia } from "@/types/models";
 
 export default function ProjectWorkspacePage() {
