@@ -29,6 +29,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FileUploader } from "@/components/ui/file-uploader";
+import { GoogleMap } from "@/components/ui/google-map";
 import {
   getProject,
   getFilesByProject,
@@ -532,6 +533,38 @@ export default function RepositoryPage() {
           )}
         </div>
 
+        {/* Map View - Show files with GPS coordinates */}
+        {files.some((f) => f.lat && f.lng) && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center">
+                <MapPin className="mr-2 h-5 w-5 text-orange-500" />
+                File Locations
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <GoogleMap
+                center={
+                  files.find((f) => f.lat && f.lng)
+                    ? {
+                        lat: files.find((f) => f.lat && f.lng)!.lat!,
+                        lng: files.find((f) => f.lat && f.lng)!.lng!,
+                      }
+                    : { lat: 40.7128, lng: -74.006 }
+                }
+                markers={files
+                  .filter((f) => f.lat && f.lng)
+                  .map((f) => ({
+                    position: { lat: f.lat!, lng: f.lng! },
+                    title: f.name,
+                    info: `${f.name} - ${formatFileSize(f.size_bytes)}`,
+                  }))}
+                height="400px"
+              />
+            </CardContent>
+          </Card>
+        )}
+
         {/* Quick Stats */}
         {files.length > 0 && (
           <Card>
@@ -539,7 +572,7 @@ export default function RepositoryPage() {
               <CardTitle className="text-lg">Repository Stats</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
                 <div>
                   <div className="text-2xl font-bold text-blue-600">
                     {
@@ -569,6 +602,12 @@ export default function RepositoryPage() {
                     }
                   </div>
                   <div className="text-sm text-gray-500">Documents</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-orange-600">
+                    {files.filter((f) => f.lat && f.lng).length}
+                  </div>
+                  <div className="text-sm text-gray-500">With GPS</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-green-600">

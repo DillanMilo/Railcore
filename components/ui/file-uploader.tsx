@@ -1,12 +1,23 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useRef } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Upload, X, MapPin, Tag, File, Image, Video, FileText, Camera } from 'lucide-react';
-import { CameraCapture } from '@/components/ui/camera-capture';
+import { useState, useCallback, useRef } from "react";
+import { useDropzone } from "react-dropzone";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Upload,
+  X,
+  MapPin,
+  Tag,
+  File,
+  Image,
+  Video,
+  FileText,
+  Camera,
+} from "lucide-react";
+import { CameraCapture } from "@/components/ui/camera-capture";
+import { GoogleMap } from "@/components/ui/google-map";
 
 interface FileUploaderProps {
   onFilesSelected: (files: File[]) => void;
@@ -23,31 +34,46 @@ export function FileUploader({
   onLocationChange,
   allowMultiple = true,
   maxSize = 50,
-  acceptedTypes = ['image/*', 'video/*', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.dwg']
+  acceptedTypes = [
+    "image/*",
+    "video/*",
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".dwg",
+  ],
 }: FileUploaderProps) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [tags, setTags] = useState<string[]>([]);
-  const [newTag, setNewTag] = useState('');
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [locationInput, setLocationInput] = useState('');
+  const [newTag, setNewTag] = useState("");
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
+  const [locationInput, setLocationInput] = useState("");
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isCapturingLocation, setIsCapturingLocation] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const validFiles = acceptedFiles.filter(file => {
-      const sizeInMB = file.size / (1024 * 1024);
-      return sizeInMB <= maxSize;
-    });
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      const validFiles = acceptedFiles.filter((file) => {
+        const sizeInMB = file.size / (1024 * 1024);
+        return sizeInMB <= maxSize;
+      });
 
-    if (allowMultiple) {
-      const newFiles = [...selectedFiles, ...validFiles];
-      setSelectedFiles(newFiles);
-      onFilesSelected(newFiles);
-    } else {
-      setSelectedFiles(validFiles.slice(0, 1));
-      onFilesSelected(validFiles.slice(0, 1));
-    }
-  }, [selectedFiles, allowMultiple, maxSize, onFilesSelected]);
+      if (allowMultiple) {
+        const newFiles = [...selectedFiles, ...validFiles];
+        setSelectedFiles(newFiles);
+        onFilesSelected(newFiles);
+      } else {
+        setSelectedFiles(validFiles.slice(0, 1));
+        onFilesSelected(validFiles.slice(0, 1));
+      }
+    },
+    [selectedFiles, allowMultiple, maxSize, onFilesSelected]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -56,7 +82,7 @@ export function FileUploader({
       return acc;
     }, {} as Record<string, string[]>),
     multiple: allowMultiple,
-    maxSize: maxSize * 1024 * 1024
+    maxSize: maxSize * 1024 * 1024,
   });
 
   const removeFile = (index: number) => {
@@ -70,12 +96,12 @@ export function FileUploader({
       const newTags = [...tags, newTag.trim()];
       setTags(newTags);
       onTagsChange(newTags);
-      setNewTag('');
+      setNewTag("");
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    const newTags = tags.filter(tag => tag !== tagToRemove);
+    const newTags = tags.filter((tag) => tag !== tagToRemove);
     setTags(newTags);
     onTagsChange(newTags);
   };
@@ -87,27 +113,31 @@ export function FileUploader({
         (position) => {
           const coords = {
             lat: position.coords.latitude,
-            lng: position.coords.longitude
+            lng: position.coords.longitude,
           };
           setLocation(coords);
-          setLocationInput(`${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`);
+          setLocationInput(
+            `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`
+          );
           setIsCapturingLocation(false);
           onLocationChange(coords);
         },
         (error) => {
-          console.error('Error getting location:', error);
-          alert('Unable to get current location. Please enter coordinates manually.');
+          console.error("Error getting location:", error);
+          alert(
+            "Unable to get current location. Please enter coordinates manually."
+          );
           setIsCapturingLocation(false);
         }
       );
     } else {
-      alert('Geolocation is not supported by this browser.');
+      alert("Geolocation is not supported by this browser.");
     }
   };
 
   const handleLocationInput = (value: string) => {
     setLocationInput(value);
-    const coords = value.split(',').map(s => parseFloat(s.trim()));
+    const coords = value.split(",").map((s) => parseFloat(s.trim()));
     if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
       const locationObj = { lat: coords[0], lng: coords[1] };
       setLocation(locationObj);
@@ -132,18 +162,18 @@ export function FileUploader({
   };
 
   const getFileIcon = (file: File) => {
-    if (file.type.startsWith('image/')) return <Image className="h-4 w-4" />;
-    if (file.type.startsWith('video/')) return <Video className="h-4 w-4" />;
-    if (file.type.includes('pdf')) return <FileText className="h-4 w-4" />;
+    if (file.type.startsWith("image/")) return <Image className="h-4 w-4" />;
+    if (file.type.startsWith("video/")) return <Video className="h-4 w-4" />;
+    if (file.type.includes("pdf")) return <FileText className="h-4 w-4" />;
     return <File className="h-4 w-4" />;
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   return (
@@ -152,15 +182,12 @@ export function FileUploader({
       <div
         {...getRootProps()}
         className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-          isDragActive 
-            ? 'border-blue-400 bg-blue-50' 
-            : 'border-gray-300 hover:border-gray-400'
+          isDragActive
+            ? "border-blue-400 bg-blue-50"
+            : "border-gray-300 hover:border-gray-400"
         }`}
       >
-        <input 
-          {...getInputProps()} 
-          ref={fileInputRef}
-        />
+        <input {...getInputProps()} ref={fileInputRef} />
         <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
         {isDragActive ? (
           <p className="text-blue-600">Drop the files here...</p>
@@ -178,7 +205,11 @@ export function FileUploader({
 
       {/* Camera and File Upload Buttons */}
       <div className="flex justify-center space-x-4">
-        <Button type="button" variant="outline" onClick={() => setIsCameraOpen(true)}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => setIsCameraOpen(true)}
+        >
           <Camera className="mr-2 h-4 w-4" />
           Take Photo
         </Button>
@@ -188,19 +219,28 @@ export function FileUploader({
         </Button>
       </div>
 
-      <CameraCapture isOpen={isCameraOpen} onCapture={handleCameraCapture} onClose={() => setIsCameraOpen(false)} />
+      <CameraCapture
+        isOpen={isCameraOpen}
+        onCapture={handleCameraCapture}
+        onClose={() => setIsCameraOpen(false)}
+      />
 
       {/* Selected Files */}
       {selectedFiles.length > 0 && (
         <div className="space-y-2">
           <h4 className="font-medium text-gray-900">Selected Files:</h4>
           {selectedFiles.map((file, index) => (
-            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div
+              key={index}
+              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+            >
               <div className="flex items-center space-x-3">
                 {getFileIcon(file)}
                 <div>
                   <p className="font-medium text-gray-900">{file.name}</p>
-                  <p className="text-sm text-gray-500">{formatFileSize(file.size)}</p>
+                  <p className="text-sm text-gray-500">
+                    {formatFileSize(file.size)}
+                  </p>
                 </div>
               </div>
               <Button
@@ -225,7 +265,7 @@ export function FileUploader({
             placeholder="Add tag (e.g., foundation, safety, progress)"
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && addTag()}
+            onKeyPress={(e) => e.key === "Enter" && addTag()}
           />
           <Button type="button" onClick={addTag} size="sm">
             <Tag className="h-4 w-4" />
@@ -234,7 +274,11 @@ export function FileUploader({
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (
-              <Badge key={tag} variant="secondary" className="flex items-center space-x-1">
+              <Badge
+                key={tag}
+                variant="secondary"
+                className="flex items-center space-x-1"
+              >
                 <span>{tag}</span>
                 <button onClick={() => removeTag(tag)} className="ml-1">
                   <X className="h-3 w-3" />
@@ -261,9 +305,23 @@ export function FileUploader({
           </Button>
         </div>
         {location && (
-          <p className="text-sm text-green-600">
-            📍 Location set: {location.lat.toFixed(6)}, {location.lng.toFixed(6)}
-          </p>
+          <div className="space-y-2">
+            <p className="text-sm text-green-600">
+              📍 Location set: {location.lat.toFixed(6)},{" "}
+              {location.lng.toFixed(6)}
+            </p>
+            <GoogleMap
+              center={location}
+              markers={[
+                {
+                  position: location,
+                  title: "Upload Location",
+                  info: "Files will be tagged with this location",
+                },
+              ]}
+              height="200px"
+            />
+          </div>
         )}
       </div>
 
@@ -273,7 +331,18 @@ export function FileUploader({
           Quick Tags:
         </label>
         <div className="flex flex-wrap gap-2">
-          {['foundation', 'framing', 'electrical', 'plumbing', 'safety', 'progress', 'inspection', 'materials', 'equipment', 'weather'].map((quickTag) => (
+          {[
+            "foundation",
+            "framing",
+            "electrical",
+            "plumbing",
+            "safety",
+            "progress",
+            "inspection",
+            "materials",
+            "equipment",
+            "weather",
+          ].map((quickTag) => (
             <Button
               key={quickTag}
               type="button"

@@ -170,7 +170,64 @@ export function Layout({ children }: LayoutProps) {
   ];
 
   return (
-    <div className="min-h-screen railcore-bg">
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Navigation Bar */}
+      <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div className="flex items-center justify-between h-16 px-4 lg:px-6">
+          {/* Left: Logo and Menu */}
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-orange-500 rounded-lg">
+                <Building2 className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900 hidden sm:block">
+                RailCore CM
+              </span>
+            </div>
+          </div>
+
+          {/* Center: Search */}
+          <div className="flex-1 max-w-2xl mx-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search Projects"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              />
+            </div>
+          </div>
+
+          {/* Right: User Menu */}
+          <div className="flex items-center space-x-4">
+            <div className="hidden sm:flex items-center space-x-3">
+              <div className="h-8 w-8 bg-orange-500 rounded-full flex items-center justify-center">
+                <span className="text-sm font-medium text-white">
+                  {user?.email?.charAt(0).toUpperCase() || "U"}
+                </span>
+              </div>
+              <div className="text-sm font-medium text-gray-900">
+                {user?.email || "User"}
+              </div>
+            </div>
+            <Button
+              onClick={handleSignOut}
+              variant="ghost"
+              size="sm"
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </header>
+
       {/* Mobile sidebar backdrop */}
       {isSidebarOpen && (
         <div
@@ -179,100 +236,43 @@ export function Layout({ children }: LayoutProps) {
         />
       )}
 
-      {/* Sidebar */}
-      <div
-        className={`fixed inset-y-0 left-0 z-50 w-64 railcore-sidebar transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:static lg:inset-0`}
-      >
-        <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 railcore-add-btn rounded-lg">
-                <Building2 className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gray-900">
-                RailCore CM
-              </span>
-            </div>
-            <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-600"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
-            {navigationItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.name}
-                  onClick={() => {
-                    router.push(item.href);
-                    setIsSidebarOpen(false);
-                  }}
-                  className={`railcore-nav-item w-full text-left ${
-                    item.isActive ? "active" : ""
-                  }`}
-                >
-                  <Icon className="mr-3 h-5 w-5 flex-shrink-0" />
-                  <span className="truncate">{item.name}</span>
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* User section */}
-          <div className="border-t border-gray-200 p-4">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="h-8 w-8 bg-orange-500 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-white">
-                  {user?.email?.charAt(0).toUpperCase() || "U"}
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {user?.email || "User"}
-                </p>
-              </div>
-            </div>
-            <Button
-              onClick={handleSignOut}
-              variant="outline"
-              size="sm"
-              className="w-full justify-start"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div className="lg:pl-64">
-        {/* Top bar */}
-        <div className="sticky top-0 z-40 flex h-16 bg-white border-b border-gray-200 lg:hidden">
-          <button
-            onClick={() => setIsSidebarOpen(true)}
-            className="px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"
-          >
-            <Menu className="h-6 w-6" />
-          </button>
-          <div className="flex-1 flex items-center justify-between px-4">
-            <h1 className="text-lg font-semibold text-gray-900">RailCore CM</h1>
+      <div className="flex">
+        {/* Sidebar */}
+        <div
+          className={`fixed inset-y-0 left-0 top-16 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="flex flex-col h-full">
+            {/* Navigation */}
+            <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => {
+                      router.push(item.href);
+                      setIsSidebarOpen(false);
+                    }}
+                    className={`flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      item.isActive
+                        ? "bg-orange-100 text-orange-700 border-r-2 border-orange-500"
+                        : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    }`}
+                  >
+                    <Icon className="mr-3 h-5 w-5 flex-shrink-0" />
+                    <span className="truncate">{item.name}</span>
+                  </button>
+                );
+              })}
+            </nav>
           </div>
         </div>
 
-        {/* Page content */}
-        <main className="flex-1">
-          <div className="p-4 sm:p-6 lg:p-6 xl:p-6 2xl:p-8">
-            <div className="max-w-7xl mx-auto">{children}</div>
-          </div>
+        {/* Main content */}
+        <main className="flex-1 lg:pl-0">
+          <div className="p-4 lg:p-6">{children}</div>
         </main>
       </div>
     </div>

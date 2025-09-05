@@ -18,7 +18,45 @@ const mockProjects: Project[] = [
   }
 ];
 
-const mockFiles: FileMeta[] = [];
+const mockFiles: FileMeta[] = [
+  {
+    id: 'file-1',
+    project_id: 'project-1',
+    name: 'Track Section Photo.jpg',
+    path: 'project-1/track-section.jpg',
+    mime_type: 'image/jpeg',
+    size_bytes: 2456789,
+    tags: ['track', 'progress', 'section-4a'],
+    lat: 40.7128,
+    lng: -74.0060,
+    uploaded_by: 'demo-user',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'file-2',
+    project_id: 'project-1',
+    name: 'Bridge Foundation.jpg',
+    path: 'project-1/bridge-foundation.jpg',
+    mime_type: 'image/jpeg',
+    size_bytes: 3456789,
+    tags: ['bridge', 'foundation', 'inspection'],
+    lat: 40.7589,
+    lng: -73.9851,
+    uploaded_by: 'demo-user',
+    created_at: new Date(Date.now() - 86400000).toISOString()
+  },
+  {
+    id: 'file-3',
+    project_id: 'project-1',
+    name: 'Safety Report.pdf',
+    path: 'project-1/safety-report.pdf',
+    mime_type: 'application/pdf',
+    size_bytes: 1234567,
+    tags: ['safety', 'report', 'compliance'],
+    uploaded_by: 'demo-user',
+    created_at: new Date(Date.now() - 172800000).toISOString()
+  }
+];
 const mockReports: DailyReport[] = [];
 const mockPunchItems: PunchItem[] = [];
 const mockTemplates: ChecklistTemplate[] = [];
